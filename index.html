@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Milk Tracker Ultra - Tony Boss</title>
+    
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b1118;
+            --card-color: #161f2b;
+            --card-glass: rgba(22, 31, 43, 0.85);
+            --border-color: #243040;
+            --text-primary: #ffffff;
+            --text-secondary: #8a9ba8;
+            --primary: #2196f3;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: var(--font-main);
+            -webkit-user-select: none; user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 16px 12px 60px 12px;
+        }
+
+        .phone-wrapper {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 4px 18px 4px;
+        }
+        .header-title-area h1 {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sub-header-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .live-status {
+            font-size: 11px;
+            color: #34d399;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .live-dot {
+            width: 6px; height: 6px;
+            background-color: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34d399;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .h-btn {
+            background: #1a2533;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Profile Selector Bar */
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .profile-dropdown-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        .profile-select {
+            width: 100%;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+        }
+        .dropdown-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .add-member-btn {
+            background: #202b3a;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Summary Dashboard */
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .edit-layout-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .widget-box {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 14px 16px;
+            position: relative;
+            cursor: grab;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+        .widget-box.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+        }
+        .widget-box.edit-mode {
+            border-style: dashed;
+            border-color: var(--primary);
+        }
+        .w-remove {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: none;
+        }
+        .widget-box.edit-mode .w-remove {
+            display: block;
+        }
+        .widget-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .widget-val {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .widget-val.green { color: var(--success); }
+        .widget-val.red { color: #f87171; }
+        .widget-box.absent-card {
+            background: linear-gradient(145deg, rgba(239, 68, 68, 0.15), rgba(22, 31, 43, 0.9));
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+
+        /* Monthly Progress Bar */
+        .progress-container {
+            background: #1a2330;
+            border-radius: 10px;
+            height: 7px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .progress-meta {
+            display: flex;
+            justify-content: flex-end;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Calendar Card */
+        .calendar-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .cal-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .cal-nav h3 {
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .cal-nav-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .nav-arrow {
+            background: #202b3a;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .days-header-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .date-tile {
+            aspect-ratio: 1/1.1;
+            background: #111822;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .date-tile:active {
+            transform: scale(0.95);
+        }
+        .date-tile.today {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.25);
+        }
+        .date-tile.future {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+        .d-num {
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .d-badge {
+            font-size: 8px;
+            font-weight: 800;
+            padding: 2px 4px;
+            border-radius: 6px;
+            margin-top: 3px;
+            background: #1e293b;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .date-tile.taken-green {
+            background: #064e3b;
+            border-color: #059669;
+        }
+        .date-tile.taken-green .d-badge {
+            background: #10b981;
+            color: #ffffff;
+        }
+        .date-tile.taken-yellow {
+            background: #78350f;
+            border-color: #d97706;
+        }
+        .date-tile.taken-yellow .d-badge {
+            background: #f59e0b;
+            color: #1c1917;
+        }
+        .date-tile.missed-red {
+            background: #7f1d1d;
+            border-color: #dc2626;
+        }
+        .date-tile.missed-red .d-badge {
+            background: #ef4444;
+            color: #ffffff;
+        }
+        .lock-indicator {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            font-size: 7px;
+            opacity: 0.6;
+        }
+
+        /* Quick Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .q-btn {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.15s;
+        }
+        .q-btn:active {
+            background: #202b3a;
+        }
+
+        /* Overlay & Bottom Sliders */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%; max-width: 440px;
+            background: #161f2b;
+            border-top: 1px solid var(--border-color);
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            z-index: 1000;
+            transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+        .bottom-sheet.open {
+            transform: translateX(-50%) translateY(0);
+        }
+        .sheet-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-sheet {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 20px; font-weight: bold; cursor: pointer;
+        }
+        .input-group {
+            margin-bottom: 14px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            background: #0f151f;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-user-select: text; user-select: text;
+        }
+        .full-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .primary-save-btn {
+            background: var(--primary);
+            color: white;
+        }
+        .danger-btn {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+        .qty-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .qty-btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="phone-wrapper">
+    <!-- Header -->
+    <header>
+        <div class="header-title-area">
+            <h1>🥛 Milk Tracker Ultra</h1>
+            <div class="sub-header-name" id="activeProfileSubtitle">Tony Boss</div>
+            <div class="live-status"><div class="live-dot"></div> Live Cloud Sync</div>
+        </div>
+        <div class="header-actions">
+            <button class="h-btn" onclick="openSettings()" title="Settings">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Profile Selector -->
+    <div class="section-label">
+        <span>Profile Selector</span>
+    </div>
+    <div class="profile-bar">
+        <div class="profile-dropdown-wrapper">
+            <select id="profileDropdown" class="profile-select" onchange="switchMember(this.value)"></select>
+            <div class="dropdown-icon">▼</div>
+        </div>
+        <button class="add-member-btn" onclick="openAddMemberModal()">＋ Add</button>
+    </div>
+
+    <!-- Summary Dashboard -->
+    <div class="summary-header">
+        <span class="section-label" style="margin:0;" id="summaryTitle">THIS MONTH SUMMARY</span>
+        <button class="edit-layout-btn" onclick="toggleEditLayout()" id="editLayoutBtn">Edit Boxes</button>
+    </div>
+
+    <div class="widgets-grid" id="widgetsContainer"></div>
+
+    <!-- Monthly Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-fill" id="deliveryProgress"></div>
+    </div>
+    <div class="progress-meta" id="progressMeta">0/0 Days Taken</div>
+
+    <!-- Calendar View -->
+    <div class="calendar-card">
+        <div class="cal-nav">
+            <h3 id="calendarMonthTitle" onclick="openJumpDateModal()">Month 2026</h3>
+            <div class="cal-nav-buttons">
+                <button class="nav-arrow" onclick="changeMonth(-1)">◀</button>
+                <button class="nav-arrow" onclick="changeMonth(1)">▶</button>
+            </div>
+        </div>
+
+        <div class="days-header-row">
+            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+        </div>
+
+        <div class="cal-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-label">QUICK ACTIONS</div>
+    <div class="actions-grid">
+        <button class="q-btn" onclick="markTodayQuick()"><span id="quickTodayIcon">🥛</span> Mark Today</button>
+        <button class="q-btn" onclick="shareWhatsApp()"><span style="color:#25d366;">💬</span> WhatsApp Bill</button>
+        <button class="q-btn" onclick="openAddWidgetModal()"><span>➕</span> Add New Box</button>
+        <button class="q-btn" onclick="openSettings()"><span>⚙️</span> Settings & Edit</button>
+    </div>
+
+    <div id="new-features-area" style="margin-top:15px;"></div>
+</div>
+
+<!-- Modal Overlays -->
+<div class="overlay" id="globalOverlay" onclick="closeAllSheets()"></div>
+
+<!-- Bottom Sheet: Settings & Profile Edit/Delete -->
+<div class="bottom-sheet" id="settingsSheet">
+    <div class="sheet-title">
+        <span id="settingsSheetHeading">⚙️ Profile Settings</span>
+        <button class="close-sheet" onclick="closeAllSheets()">✕</button>
+    </div>
+    <div class="input-group">
+        <label>Profile Name</label>
+        <input type="text" id="settingName" placeholder="Name">
+    </div>
+    <div class="input-group">
+        <label>Per Litre Rate (₹)</label>
+        <input type="number" id="settingRate" value="65">
+    </div>
+    <div class="input-group">
+        <label>Default Daily Quantity (L)</label>
+        <input type="number" id="settingQty" value="2" step="0.5">
+    </div>
+    <div class="input-group">
+        <label>Profile Visibility</label>
+        <select id="settingVisibility">
+            <option value="public">Public (Sabhi dekh sakein)</option>
+            <option value="private">Private (Only viewable here)</option>
+        </select>
+    </div>
+    <button class="full-btn primary-save-btn" onclick="saveSettings()">Save Changes</button>
+    <button class="full-btn danger-btn" onclick="deleteCurrentProfile()">🗑️ Delete This Profile</button>
+</div>
+
+<!-- Bottom Sheet: Add Member -->
+<div class="bottom-sheet" id="addMemberSheet">
+    <div class="sheet-title">
+        <span>👤 Add New Profile</span>
+        <button class="close-sheet" onclick="closeAllSheets()">✕</button>
+    </div>
+    <div class="input-group">
+        <label>Member Name</label>
+        <input type="text" id="newMemberName" placeholder="e.g. Bhai, Papa">
+    </div>
+    <div class="input-group">
+        <label>Daily Milk (L)</label>
+        <input type="number" id="newMemberQty" value="2" step="0.5">
+    </div>
+    <div class="input-group">
+        <label>Rate (₹)</label>
+        <input type="number" id="newMemberRate" value="65">
+    </div>
+    <button class="full-btn primary-save-btn" onclick="saveNewMember()">Create Profile</button>
+</div>
+
+<!-- Bottom Sheet: Special Quantity -->
+<div class="bottom-sheet" id="qtySheet">
+    <div class="sheet-title">
+        <span>🥛 Select Milk Quantity</span>
+        <button class="close-sheet" onclick="closeAllSheets()">✕</button>
+    </div>
+    <div class="qty-buttons-grid">
+        <button class="qty-btn" onclick="applyQty('1L')">1L</button>
+        <button class="qty-btn" onclick="applyQty('1.5L')">1.5L</button>
+        <button class="qty-btn" onclick="applyQty('2L')">2L</button>
+        <button class="qty-btn" onclick="applyQty('2.5L')">2.5L</button>
+        <button class="qty-btn" onclick="applyQty('3L')">3L</button>
+        <button class="qty-btn" onclick="applyQty('4L')">4L</button>
+    </div>
+    <button class="full-btn" style="background:#202b3a; color:white;" onclick="applyCustomQty()">✏️ Custom Litres</button>
+    <button class="full-btn" style="background:rgba(239, 68, 68, 0.2); color:#ef4444;" onclick="applyQty('none')">🗑 Reset / Delete</button>
+</div>
+
+<!-- Bottom Sheet: Add Custom Dashboard Box -->
+<div class="bottom-sheet" id="addBoxSheet">
+    <div class="sheet-title">
+        <span>➕ Add Summary Box</span>
+        <button class="close-sheet" onclick="closeAllSheets()">✕</button>
+    </div>
+    <div class="input-group">
+        <label>Box Title</label>
+        <input type="text" id="newBoxTitle" placeholder="e.g. Extra Charges, Avg/Day">
+    </div>
+    <div class="input-group">
+        <label>Custom Text / Value</label>
+        <input type="text" id="newBoxValue" placeholder="e.g. ₹ 0, 1.8 L">
+    </div>
+    <button class="full-btn primary-save-btn" onclick="saveNewWidget()">Add Box to Dashboard</button>
+</div>
+
+<!-- Bottom Sheet: Jump Month -->
+<div class="bottom-sheet" id="jumpSheet">
+    <div class="sheet-title">
+        <span>📅 Jump To Month</span>
+        <button class="close-sheet" onclick="closeAllSheets()">✕</button>
+    </div>
+    <div class="input-group">
+        <label>Choose Month & Year</label>
+        <input type="month" id="jumpInput">
+    </div>
+    <button class="full-btn primary-save-btn" onclick="jumpToSelectedMonth()">Go to Date</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEHcWmpa98bBdL9x8hZfFGzk2iAu1VwhI",
+      authDomain: "milk-tracker-e410b.firebaseapp.com",
+      projectId: "milk-tracker-e410b",
+      storageBucket: "milk-tracker-e410b.firebasestorage.app",
+      messagingSenderId: "172484975656",
+      appId: "1:172484975656:web:5115771ea591b0df95a91d",
+      databaseURL: "https://milk-tracker-e410b-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let viewDate = new Date();
+    const today = new Date(); today.setHours(0,0,0,0);
+    const LOCK_TIME = 24 * 60 * 60 * 1000;
+
+    let currentMemberId = localStorage.getItem('ultra_member_id') || 'tony';
+    let allMembers = {};
+    let monthData = {};
+    let activeDateDay = null;
+    let longPressTimeout = null;
+    let isEditLayoutMode = false;
+
+    let defaultWidgets = [
+        { id: 'total_litres', title: 'Total Litres', icon: '🥛', type: 'dynamic_litres' },
+        { id: 'total_bill', title: 'Total Bill', icon: '₹', type: 'dynamic_bill' },
+        { id: 'absent_days', title: 'Absent Days', icon: '✕', type: 'dynamic_absent' }
+    ];
+
+    let userWidgets = JSON.parse(localStorage.getItem('ultra_widgets')) || defaultWidgets;
+
+    // Listen Members from Firebase
+    onValue(ref(db, 'members'), (snapshot) => {
+        allMembers = snapshot.val() || {};
+        const memberKeys = Object.keys(allMembers);
+
+        if (memberKeys.length === 0) {
+            // Agar ek bhi member nahi hai toh default create karein
+            set(ref(db, 'members/tony'), {
+                name: 'Tony Boss',
+                rate: 65,
+                defaultQty: 2,
+                visibility: 'public'
+            });
+            return;
+        }
+
+        // Agar active member ID exist nahi karti toh first member ko pick karein
+        if (!allMembers[currentMemberId]) {
+            currentMemberId = memberKeys[0];
+            localStorage.setItem('ultra_member_id', currentMemberId);
+        }
+
+        renderMembersDropdown();
+        loadActiveMember();
+        listenMonthData();
+    });
+
+    function renderMembersDropdown() {
+        const select = document.getElementById('profileDropdown');
+        select.innerHTML = '';
+        for (let id in allMembers) {
+            const m = allMembers[id];
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.innerText = m.name + (id === currentMemberId ? ' (Active)' : '') + (m.visibility === 'private' ? ' 🔒' : '');
+            if (id === currentMemberId) opt.selected = true;
+            select.appendChild(opt);
+        }
+    }
+
+    window.switchMember = function(id) {
+        currentMemberId = id;
+        localStorage.setItem('ultra_member_id', id);
+        renderMembersDropdown();
+        loadActiveMember();
+        listenMonthData();
+    };
+
+    function loadActiveMember() {
+        const m = allMembers[currentMemberId] || { name: 'Tony Boss', rate: 65, defaultQty: 2, visibility: 'public' };
+        document.getElementById('activeProfileSubtitle').innerText = m.name;
+        document.getElementById('settingName').value = m.name;
+        document.getElementById('settingRate').value = m.rate || 65;
+        document.getElementById('settingQty').value = m.defaultQty || 2;
+        document.getElementById('settingVisibility').value = m.visibility || 'public';
+        document.getElementById('settingsSheetHeading').innerText = `⚙️ ${m.name} Settings`;
+    }
+
+    function listenMonthData() {
+        const y = viewDate.getFullYear(), m = viewDate.getMonth();
+        onValue(ref(db, `data/${currentMemberId}/${y}_${m}`), (snap) => {
+            monthData = snap.val() || {};
+            renderCalendar();
+            renderDashboardWidgets();
+        });
+    }
+
+    function renderDashboardWidgets() {
+        const container = document.getElementById('widgetsContainer');
+        container.innerHTML = '';
+
+        const mem = allMembers[currentMemberId] || { rate: 65, defaultQty: 2 };
+        let litres = 0, takenDays = 0, absentDays = 0;
+
+        for (let k in monthData) {
+            const entry = monthData[k];
+            if (!entry || !entry.status) continue;
+            if (entry.status === 'missed') {
+                absentDays++;
+            } else if (entry.status.includes('L')) {
+                litres += parseFloat(entry.status);
+                takenDays++;
+            }
+        }
+
+        const totalBill = Math.round(litres * (mem.rate || 65));
+        const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
+
+        const fillPercent = Math.min(100, Math.round((takenDays / daysInMonth) * 100));
+        document.getElementById('deliveryProgress').style.width = fillPercent + '%';
+        document.getElementById('progressMeta').innerText = `${takenDays}/${daysInMonth} Days Taken`;
+
+        userWidgets.forEach((w, index) => {
+            const box = document.createElement('div');
+            box.className = 'widget-box';
+            if (isEditLayoutMode) box.classList.add('edit-mode');
+            if (w.type === 'dynamic_absent') box.classList.add('absent-card');
+
+            box.draggable = isEditLayoutMode;
+            box.dataset.index = index;
+
+            let displayVal = w.customValue || '-';
+            let valClass = '';
+
+            if (w.type === 'dynamic_litres') {
+                displayVal = litres.toFixed(1) + ' L';
+            } else if (w.type === 'dynamic_bill') {
+                displayVal = '₹ ' + totalBill.toLocaleString('en-IN');
+                valClass = 'green';
+            } else if (w.type === 'dynamic_absent') {
+                displayVal = absentDays + ' Days';
+                valClass = 'red';
+            }
+
+            box.innerHTML = `
+                <button class="w-remove" onclick="removeWidget(${index})">✕</button>
+                <div class="widget-label"><span>${w.icon || '📌'}</span> ${w.title}</div>
+                <div class="widget-val ${valClass}">${displayVal}</div>
+            `;
+
+            box.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', index);
+                box.classList.add('dragging');
+            });
+            box.addEventListener('dragend', () => box.classList.remove('dragging'));
+            box.addEventListener('dragover', (e) => e.preventDefault());
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                const toIdx = index;
+                if (fromIdx !== toIdx) {
+                    const movedItem = userWidgets.splice(fromIdx, 1)[0];
+                    userWidgets.splice(toIdx, 0, movedItem);
+                    saveWidgetsLocally();
+                    renderDashboardWidgets();
+                }
+            });
+
+            container.appendChild(box);
+        });
+    }
+
+    function saveWidgetsLocally() {
+        localStorage.setItem('ultra_widgets', JSON.stringify(userWidgets));
+    }
+
+    window.toggleEditLayout = function() {
+        isEditLayoutMode = !isEditLayoutMode;
+        document.getElementById('editLayoutBtn').innerText = isEditLayoutMode ? 'Done Layout' : 'Edit Boxes';
+        renderDashboardWidgets();
+    };
+
+    window.removeWidget = function(idx) {
+        userWidgets.splice(idx, 1);
+        saveWidgetsLocally();
+        renderDashboardWidgets();
+    };
+
+    window.saveNewWidget = function() {
+        const title = document.getElementById('newBoxTitle').value.trim();
+        const value = document.getElementById('newBoxValue').value.trim();
+        if (!title) return alert("Title zaroori hai!");
+
+        userWidgets.push({
+            id: 'custom_' + Date.now(),
+            title: title,
+            customValue: value || '0',
+            icon: '📊',
+            type: 'custom'
+        });
+        saveWidgetsLocally();
+        renderDashboardWidgets();
+        closeAllSheets();
+        document.getElementById('newBoxTitle').value = '';
+        document.getElementById('newBoxValue').value = '';
+    };
+
+    function renderCalendar() {
+        const cal = document.getElementById('calendarGrid');
+        const m = viewDate.getMonth(), y = viewDate.getFullYear();
+        const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        document.getElementById('calendarMonthTitle').innerText = `${monthNames[m]} ${y}`;
+        document.getElementById('summaryTitle').innerText = `THIS MONTH SUMMARY (${monthNames[m].toUpperCase()} ${y})`;
+
+        const firstDay = new Date(y, m, 1).getDay();
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+        cal.innerHTML = '';
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            cal.appendChild(empty);
+        }
+
+        const mem = allMembers[currentMemberId] || { defaultQty: 2 };
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const tile = document.createElement('div');
+            tile.className = 'date-tile';
+            const thisDate = new Date(y, m, d);
+            const isFuture = thisDate > today;
+            const isToday = thisDate.getTime() === today.getTime();
+
+            if (isToday) tile.classList.add('today');
+            if (isFuture) tile.classList.add('future');
+
+            const entry = monthData[d] || { status: 'none', ts: null };
+            const isLocked = entry.ts && (Date.now() - entry.ts > LOCK_TIME);
+
+            let badgeHtml = '';
+            if (entry.status === 'missed') {
+                tile.classList.add('missed-red');
+                badgeHtml = '<span class="d-badge">✕ No</span>';
+            } else if (entry.status === mem.defaultQty + 'L') {
+                tile.classList.add('taken-green');
+                badgeHtml = `<span class="d-badge">✓ ${entry.status}</span>`;
+            } else if (entry.status !== 'none') {
+                tile.classList.add('taken-yellow');
+                badgeHtml = `<span class="d-badge">⚡ ${entry.status}</span>`;
+            }
+
+            tile.innerHTML = `
+                <span class="d-num">${d < 10 ? '0' + d : d}</span>
+                ${badgeHtml}
+                ${isLocked ? '<span class="lock-indicator">🔒</span>' : ''}
+            `;
+
+            tile.onclick = () => {
+                if (isFuture || isLocked) return;
+                let next = (entry.status === 'none' || entry.status === 'missed') ? mem.defaultQty + 'L' : 'missed';
+                set(ref(db, `data/${currentMemberId}/${y}_${m}/${d}`), { status: next, ts: Date.now() });
+            };
+
+            tile.ontouchstart = () => {
+                if (!isFuture && !isLocked) {
+                    longPressTimeout = setTimeout(() => {
+                        activeDateDay = d;
+                        openQtyModal();
+                    }, 500);
+                }
+            };
+            tile.ontouchend = () => clearTimeout(longPressTimeout);
+
+            cal.appendChild(tile);
+        }
+    }
+
+    window.markTodayQuick = function() {
+        const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+        const mem = allMembers[currentMemberId] || { defaultQty: 2 };
+        const entry = monthData[d] || { status: 'none' };
+        let next = (entry.status === 'none' || entry.status === 'missed') ? mem.defaultQty + 'L' : 'missed';
+        set(ref(db, `data/${currentMemberId}/${y}_${m}/${d}`), { status: next, ts: Date.now() });
+    };
+
+    window.shareWhatsApp = function() {
+        const mem = allMembers[currentMemberId] || { name: 'Tony Boss', rate: 65 };
+        let litres = 0, days = 0;
+        for (let k in monthData) {
+            if (monthData[k] && monthData[k].status && monthData[k].status.includes('L')) {
+                litres += parseFloat(monthData[k].status);
+                days++;
+            }
+        }
+        const bill = Math.round(litres * (mem.rate || 65));
+        const monthYear = document.getElementById('calendarMonthTitle').innerText;
+        const msg = `🥛 *Milk Bill Summary - ${mem.name}*\n📅 *Period:* ${monthYear}\n✅ *Delivered Days:* ${days} Days\n📦 *Total Quantity:* ${litres.toFixed(1)} L\n💰 *Rate:* ₹${mem.rate || 65}/L\n🧾 *Total Bill:* ₹${bill.toLocaleString('en-IN')}`;
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+
+    window.applyQty = function(q) {
+        const y = viewDate.getFullYear(), m = viewDate.getMonth();
+        if (q === 'none') {
+            set(ref(db, `data/${currentMemberId}/${y}_${m}/${activeDateDay}`), null);
+        } else {
+            set(ref(db, `data/${currentMemberId}/${y}_${m}/${activeDateDay}`), { status: q, ts: Date.now() });
+        }
+        closeAllSheets();
+    };
+
+    window.applyCustomQty = function() {
+        const val = prompt("Enter Custom Milk Litres (e.g. 2.75):");
+        if (val && !isNaN(val)) applyQty(val + 'L');
+    };
+
+    // Save Active Profile Settings (Name, Rate, Qty)
+    window.saveSettings = function() {
+        const name = document.getElementById('settingName').value.trim();
+        const rate = parseFloat(document.getElementById('settingRate').value) || 65;
+        const defaultQty = parseFloat(document.getElementById('settingQty').value) || 2;
+        const visibility = document.getElementById('settingVisibility').value;
+
+        if (!name) return alert("Name empty nahi ho sakta!");
+
+        set(ref(db, `members/${currentMemberId}`), {
+            name: name,
+            rate: rate,
+            defaultQty: defaultQty,
+            visibility: visibility
+        });
+        closeAllSheets();
+    };
+
+    // Delete Active Profile with Clean State Switch
+    window.deleteCurrentProfile = function() {
+        const memberKeys = Object.keys(allMembers);
+        if (memberKeys.length <= 1) {
+            return alert("Kam se kam ek profile ka hona zaroori hai! Aap aakhri profile delete nahi kar sakte.");
+        }
+
+        const memName = (allMembers[currentMemberId] && allMembers[currentMemberId].name) || 'yeh profile';
+        if (!confirm(`Kya aap sach me "${memName}" ko delete karna chahte hain? Inka saara calendar data bhi delete ho jayega!`)) {
+            return;
+        }
+
+        const targetId = currentMemberId;
+        const nextId = memberKeys.find(id => id !== targetId);
+
+        // Pehle switch karein taaki UI empty state me na jaye
+        window.switchMember(nextId);
+
+        // Firebase se member aur unka track record dono remove karein
+        remove(ref(db, `members/${targetId}`));
+        remove(ref(db, `data/${targetId}`));
+
+        closeAllSheets();
+    };
+
+    // Simple & Crash-Free New Member Creation
+    window.saveNewMember = function() {
+        const name = document.getElementById('newMemberName').value.trim();
+        const rate = parseFloat(document.getElementById('newMemberRate').value) || 65;
+        const defaultQty = parseFloat(document.getElementById('newMemberQty').value) || 2;
+        if (!name) return alert("Member name likhna zaroori hai!");
+
+        // Safe Unique ID generate hoti hai bina kisi crash ke
+        const uniqueId = 'mem_' + Date.now();
+
+        set(ref(db, `members/${uniqueId}`), { 
+            name: name, 
+            rate: rate, 
+            defaultQty: defaultQty, 
+            visibility: 'public' 
+        });
+
+        window.switchMember(uniqueId);
+        closeAllSheets();
+        document.getElementById('newMemberName').value = '';
+    };
+
+    window.changeMonth = function(step) {
+        viewDate.setMonth(viewDate.getMonth() + step);
+        listenMonthData();
+    };
+
+    window.jumpToSelectedMonth = function() {
+        const val = document.getElementById('jumpInput').value;
+        if (!val) return;
+        const [y, m] = val.split('-');
+        viewDate = new Date(y, m - 1, 1);
+        closeAllSheets();
+        listenMonthData();
+    };
+
+    window.openSettings = function() {
+        document.getElementById('globalOverlay').style.display = 'block';
+        document.getElementById('settingsSheet').classList.add('open');
+    };
+    window.openAddMemberModal = function() {
+        document.getElementById('globalOverlay').style.display = 'block';
+        document.getElementById('addMemberSheet').classList.add('open');
+    };
+    function openQtyModal() {
+        document.getElementById('globalOverlay').style.display = 'block';
+        document.getElementById('qtySheet').classList.add('open');
+    }
+    window.openAddWidgetModal = function() {
+        document.getElementById('globalOverlay').style.display = 'block';
+        document.getElementById('addBoxSheet').classList.add('open');
+    };
+    window.openJumpDateModal = function() {
+        document.getElementById('globalOverlay').style.display = 'block';
+        document.getElementById('jumpSheet').classList.add('open');
+    };
+    window.closeAllSheets = function() {
+        document.getElementById('globalOverlay').style.display = 'none';
+        document.querySelectorAll('.bottom-sheet').forEach(el => el.classList.remove('open'));
+    };
+</script>
+</body>
+</html>
